@@ -55,23 +55,13 @@
         .hero-header img {
   width: 100%;
   height: auto;
-  max-height: 66vh; /* 高さを画面の2/3までに制限 */
-  object-fit: cover; /* 画像がはみ出ないように調整 */
+  max-width: 900px;         /* container と合わせる */
+  margin: 0 auto;           /* 中央揃え */
   display: block;
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
 }
 
-        .hero-header::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--header-overlay-color);
-            z-index: 1; 
-        }
 
         /* ヘッダー内のコンテンツを包むコンテナは削除し、各要素で制御 */
         .hero-header > * { 
