@@ -114,19 +114,20 @@
             margin: 0 auto 25px auto; /* 上下マージン、左右autoで中央揃え */
             text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
         }
-        .disclaimer { 
-            font-size: 0.85rem;
-            color: #374151;
-            margin: 30px auto;
-            padding: 16px 20px;
-            background-color: #ffffff;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            max-width: 700px;
-            text-align: left;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            line-height: 1.8;
-        }
+        .disclaimer {
+  max-width: 900px;              /* containerと合わせる */
+  margin: 30px auto;             /* 上下に余白＋中央揃え */
+  padding: 20px;
+  background-color: white;       /* 背景白に固定 */
+  border: 1px solid #e5e7eb;     /* 薄いグレーの枠線（Tailwindでいうborder-gray-200） */
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);            /* 通常テキスト色 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* 少しだけ影を */
+  text-align: left;
+}
+
 
         .disclaimer strong {
             font-weight: 700;
