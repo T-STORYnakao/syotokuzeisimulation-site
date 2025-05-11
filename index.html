@@ -55,11 +55,12 @@
         .hero-header img {
   width: 100%;
   height: auto;
+  max-height: 66vh; /* 高さを画面の2/3までに制限 */
+  object-fit: cover; /* 画像がはみ出ないように調整 */
   display: block;
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
 }
-
 
         .hero-header::before {
             content: "";
