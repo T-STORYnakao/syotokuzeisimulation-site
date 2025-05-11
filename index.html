@@ -28,7 +28,7 @@
 
             --header-text: #ffffff;
             --header-accent-text: #e0e7ff; /* ヘッダー内の薄いアクセントテキスト */
-            --header-overlay-color: rgba(0, 0, 0, 0.35); /* 背景画像上のオーバーレイの色を少し濃く */
+            /* --header-overlay-color: rgba(0, 0, 0, 0.35); 背景画像を使わないのでコメントアウト */
         }
 
         * {
@@ -52,82 +52,37 @@
             width: 100%;
         }
 
+        .hero-header { /* 新しいヘッダー（画像のみ）のスタイル */
+            text-align: center; /* 画像を中央に配置するため */
+            margin-bottom: 15px; /* 免責事項との間隔を少し詰める */
+            padding-left: 15px; /* スマホ時の左右余白をここで確保 */
+            padding-right: 15px; /* スマホ時の左右余白をここで確保 */
+        }
+
         .hero-header img {
-  width: 100%;
-  height: auto;
-  max-width: 900px;         /* container と合わせる */
-  margin: 0 auto;           /* 中央揃え */
-  display: block;
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
-}
-
-
-        /* ヘッダー内のコンテンツを包むコンテナは削除し、各要素で制御 */
-        .hero-header > * { 
-            position: relative;
-            z-index: 2;
+            width: 100%;
+            height: auto;
+            max-width: 900px;       /* container と合わせる */
+            margin: 0 auto;         /* 中央揃え */
+            display: block;
+            border-bottom-left-radius: 24px; /* 画像の下部角丸 */
+            border-bottom-right-radius: 24px; /* 画像の下部角丸 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 画像に影 */
         }
         
-        .hero-header .logo {
-            position: absolute; /* ロゴは左上に固定 */
-            top: 25px;
-            left: 25px;
-            font-size: 1rem; 
-            font-weight: 700; 
-            color: var(--header-text); 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
-            text-align: left; /* ロゴ自体は左揃え */
+        .disclaimer { /* ユーザー提供の免責事項スタイル */
+            max-width: 900px;         /* containerと合わせる */
+            margin: 15px auto 30px auto; /* 上マージンを調整、下30px、左右autoで中央揃え */
+            padding: 20px;
+            background-color: white;     /* 背景白に固定 */
+            border: 1px solid #e5e7eb;   /* 薄いグレーの枠線 */
+            border-radius: 10px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);       /* 通常テキスト色 */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* 少しだけ影を */
+            text-align: left;
         }
-        .hero-header .logo span {
-            display: block;
-            font-size: 0.75rem; 
-            font-weight: 500;
-        }
-
-        .hero-header .catchphrase {
-            font-size: 1.1rem; 
-            font-weight: 700; 
-            color: var(--header-text); 
-            margin-bottom: 10px; 
-            display: inline-block; 
-            padding: 5px 15px; 
-            background-color: rgba(0,0,0,0.3); 
-            border-radius: 20px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .hero-header h1 {
-            color: var(--header-text);
-            font-size: 2.8rem; 
-            font-weight: 900; 
-            margin-bottom: 12px; 
-            line-height: 1.2;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
-        }
-
-        .hero-header .subtitle {
-            color: var(--header-accent-text);
-            font-size: 1.05rem; 
-            font-weight: 500; 
-            max-width: 600px; /* 中央揃えのための最大幅 */
-            margin: 0 auto 25px auto; /* 上下マージン、左右autoで中央揃え */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-        }
-        .disclaimer {
-  max-width: 900px;              /* containerと合わせる */
-  margin: 30px auto;             /* 上下に余白＋中央揃え */
-  padding: 20px;
-  background-color: white;       /* 背景白に固定 */
-  border: 1px solid #e5e7eb;     /* 薄いグレーの枠線（Tailwindでいうborder-gray-200） */
-  border-radius: 10px;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: var(--text);            /* 通常テキスト色 */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* 少しだけ影を */
-  text-align: left;
-}
-
 
         .disclaimer strong {
             font-weight: 700;
@@ -138,7 +93,7 @@
 
         .container {
             max-width: 900px;
-            width: calc(100% - 40px); 
+            width: calc(100% - 30px); /* PCでも左右15pxの余白を確保 */
             margin: 0 auto 20px auto; 
             background-color: var(--bg-card);
             border-radius: 16px;
@@ -150,35 +105,22 @@
         
         @media (max-width: 768px) {
             .hero-header {
-                padding: 40px 15px; 
-                border-bottom-left-radius: 20px;
-                border-bottom-right-radius: 20px;
+                margin-bottom: 10px; /* スマホではさらに詰める */
+                /* padding-left/right は基本スタイルで設定済み */
             }
-            .hero-header .logo {
-                font-size: 0.9rem;
-                top: 20px;
-                left: 20px;
+            .hero-header img {
+                border-bottom-left-radius: 15px;
+                border-bottom-right-radius: 15px;
             }
-            .hero-header .logo span {
-                font-size: 0.7rem;
-            }
-            .hero-header .catchphrase {
-                font-size: 1rem;
-            }
-            .hero-header h1 {
-                font-size: 2rem; 
-            }
-            .hero-header .subtitle {
-                font-size: 0.95rem;
-                max-width: 90%; /* スマホでは幅を少し広げる */
-            }
-             .hero-header .disclaimer {
-                font-size: 0.75rem;
-                padding: 8px 10px;
-                max-width: 90%; /* スマホでは幅を少し広げる */
+            .disclaimer {
+                font-size: 0.85rem;
+                padding: 15px;
+                width: calc(100% - 30px); /* スマホでの左右余白を各15pxに */
+                margin-top: 10px; /* スマホでの上マージンを調整 */
+                margin-bottom: 20px;
             }
             .container {
-                width: calc(100% - 20px); 
+                width: calc(100% - 30px); /* スマホでの左右余白を各15pxに */
                 padding: 15px;
             }
         }
@@ -229,6 +171,17 @@
 
         
         @media (min-width: 768px) {
+            .hero-header {
+                padding-left: 20px; /* PC時の左右余白 */
+                padding-right: 20px; /* PC時の左右余白 */
+            }
+            .disclaimer {
+                width: auto; /* PCではmax-widthで制御 */
+            }
+            .container {
+                 width: calc(100% - 40px); /* PCでも左右20pxの余白を確保 */
+                 padding: 32px;
+            }
             .form-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
@@ -241,9 +194,6 @@
                 height: 28px;
                 font-size: 0.875rem;
                 margin-right: 12px;
-            }
-            .container {
-                 padding: 32px;
             }
             .section {
                 padding: 24px;
@@ -603,22 +553,20 @@
             color: var(--text-light);
             border-top: 1px solid var(--border); 
         }
-
     </style>
 </head>
 <body>
+    <div class="site-wrapper"> 
+        <header class="hero-header">
+            <img src="firstview.png" alt="ラクちん所得税計算シミュレーション ヘッダー画像">
+        </header>
 
-  <header class="hero-header">
-    <img src="firstview.png" alt="ラクちん所得税計算シミュレーション">
-  </header>
-
-  <div class="disclaimer">
-    <strong>【免責事項】</strong>
-    本シミュレーションは、一般的な税制に基づき算出された概算結果を提供するものであり、特定の個別事例や最新の法改正等を反映したものではありません。<br>
-    本ツールの利用結果は、実際の税額を保証するものではなく、確定申告その他の税務手続きに関しては、必ず税理士等の専門家にご相談ください。<br>
-    また、本ツールの利用または利用不能に関連して利用者に生じた一切の損害について、当社は一切の責任を負いません。
-  </div>
-
+        <div class="disclaimer">
+            <strong>【免責事項】</strong>
+            本シミュレーションは、一般的な税制に基づき算出された概算結果を提供するものであり、特定の個別事例や最新の法改正等を反映したものではありません。<br>
+            本ツールの利用結果は、実際の税額を保証するものではなく、確定申告その他の税務手続きに関しては、必ず税理士等の専門家にご相談ください。<br>
+            また、本ツールの利用または利用不能に関連して利用者に生じた一切の損害について、当社は一切の責任を負いません。
+        </div>
 
         <div class="container">
             <div class="error-message" id="errorMessage"></div>
