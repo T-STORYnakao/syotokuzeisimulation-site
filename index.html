@@ -27,8 +27,8 @@
             --error: #ef4444;
 
             --header-text: #ffffff;
-            --header-accent-text: #e0e7ff;
-            --header-overlay-color: rgba(0, 0, 0, 0.35);
+            --header-accent-text: #e0e7ff; /* ヘッダー内の薄いアクセントテキスト */
+            --header-overlay-color: rgba(0, 0, 0, 0.35); /* 背景画像上のオーバーレイの色を少し濃く */
         }
 
         * {
@@ -52,34 +52,82 @@
             width: 100%;
         }
 
-        .hero-header {
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
-        }
-
         .hero-header img {
-            width: 100%;
-            height: auto;
-            max-width: 900px;
+  width: 100%;
+  height: auto;
+  max-width: 900px;         /* container と合わせる */
+  margin: 0 auto;           /* 中央揃え */
+  display: block;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+
+        /* ヘッダー内のコンテンツを包むコンテナは削除し、各要素で制御 */
+        .hero-header > * { 
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-header .logo {
+            position: absolute; /* ロゴは左上に固定 */
+            top: 25px;
+            left: 25px;
+            font-size: 1rem; 
+            font-weight: 700; 
+            color: var(--header-text); 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+            text-align: left; /* ロゴ自体は左揃え */
+        }
+        .hero-header .logo span {
             display: block;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-size: 0.75rem; 
+            font-weight: 500;
         }
 
-        .disclaimer {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: var(--text);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            text-align: left;
+        .hero-header .catchphrase {
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            color: var(--header-text); 
+            margin-bottom: 10px; 
+            display: inline-block; 
+            padding: 5px 15px; 
+            background-color: rgba(0,0,0,0.3); 
+            border-radius: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
+
+        .hero-header h1 {
+            color: var(--header-text);
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            margin-bottom: 12px; 
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
+        }
+
+        .hero-header .subtitle {
+            color: var(--header-accent-text);
+            font-size: 1.05rem; 
+            font-weight: 500; 
+            max-width: 600px; /* 中央揃えのための最大幅 */
+            margin: 0 auto 25px auto; /* 上下マージン、左右autoで中央揃え */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        }
+        .disclaimer {
+  max-width: 900px;              /* containerと合わせる */
+  margin: 30px auto;             /* 上下に余白＋中央揃え */
+  padding: 20px;
+  background-color: white;       /* 背景白に固定 */
+  border: 1px solid #e5e7eb;     /* 薄いグレーの枠線（Tailwindでいうborder-gray-200） */
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text);            /* 通常テキスト色 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* 少しだけ影を */
+  text-align: left;
+}
+
 
         .disclaimer strong {
             font-weight: 700;
@@ -87,31 +135,482 @@
             margin-bottom: 6px;
         }
 
+
+        .container {
+            max-width: 900px;
+            width: calc(100% - 40px); 
+            margin: 0 auto 20px auto; 
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 20px; 
+            flex-grow: 1; 
+        }
+        
+        
         @media (max-width: 768px) {
             .hero-header {
+                padding: 40px 15px; 
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+            }
+            .hero-header .logo {
+                font-size: 0.9rem;
+                top: 20px;
+                left: 20px;
+            }
+            .hero-header .logo span {
+                font-size: 0.7rem;
+            }
+            .hero-header .catchphrase {
+                font-size: 1rem;
+            }
+            .hero-header h1 {
+                font-size: 2rem; 
+            }
+            .hero-header .subtitle {
+                font-size: 0.95rem;
+                max-width: 90%; /* スマホでは幅を少し広げる */
+            }
+             .hero-header .disclaimer {
+                font-size: 0.75rem;
+                padding: 8px 10px;
+                max-width: 90%; /* スマホでは幅を少し広げる */
+            }
+            .container {
+                width: calc(100% - 20px); 
                 padding: 15px;
             }
+        }
 
-            .hero-header img {
-                width: 100%;
-                max-width: 100%;
-                padding: 0 10px;
-                border-radius: 12px;
-            }
 
-            .disclaimer {
-                font-size: 0.85rem;
-                padding: 16px;
-                margin: 20px auto;
+        .section {
+            background-color: var(--bg-card); 
+            border-radius: 12px;
+            padding: 16px; 
+            margin-bottom: 20px; 
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title h2 {
+            font-size: 1.1rem; 
+            color: var(--primary-dark);
+            flex-grow: 1;
+        }
+
+        .section-title .number-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px; 
+            height: 24px; 
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.8rem; 
+            margin-right: 10px; 
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr; 
+            gap: 16px; 
+        }
+
+        
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
             }
+            .section-title h2 {
+                font-size: 1.25rem;
+            }
+            .section-title .number-badge {
+                width: 28px;
+                height: 28px;
+                font-size: 0.875rem;
+                margin-right: 12px;
+            }
+            .container {
+                 padding: 32px;
+            }
+            .section {
+                padding: 24px;
+                margin-bottom: 24px;
+            }
+        }
+
+
+        .form-group {
+            margin-bottom: 16px; 
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label.input-label, 
+        .form-group > label { 
+            display: block;
+            margin-bottom: 6px; 
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9rem; 
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px 14px; 
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem; 
+            background-color: var(--input-bg);
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            border-color: var(--primary-light);
+            background-color: var(--input-focus-bg);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+
+        input[type="number"]::placeholder,
+        input[type="text"]::placeholder {
+            color: #aab3c0;
+        }
+
+        input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            opacity: 0;
+            position: absolute;
+            left: -9999px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px; 
+            flex-wrap: wrap; 
+        }
+
+        
+        @media (max-width: 480px) {
+            .radio-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px; 
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative; 
+        }
+        .radio-option::before { 
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--text-light);
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label + span::before, 
+        .radio-option.radio-option-selected::before { 
+            border-color: var(--primary);
+            background-color: var(--primary); 
+        }
+        
+        .radio-option input[type="radio"]:checked + .radio-label + span::after,
+        .radio-option.radio-option-selected::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 17px; 
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white; 
+            display: block;
+        }
+
+
+        .radio-option:hover {
+            border-color: var(--primary-light);
+            background-color: var(--primary-bg);
+        }
+         .radio-option:hover::before {
+            border-color: var(--primary-light);
+        }
+
+        .radio-option.radio-option-selected {
+            border-color: var(--primary);
+            background-color: var(--primary-bg);
+        }
+         .radio-option.radio-option-selected::before {
+            border-color: var(--primary);
+        }
+
+
+        .radio-label {
+            font-size: 0.9rem; 
+            user-select: none; 
+        }
+
+        .help-text {
+            font-size: 0.75rem; 
+            color: var(--text-light);
+            margin-top: 4px; 
+        }
+
+        .calculate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px; 
+            font-size: 1rem; 
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 24px auto; 
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 280px; 
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 10px rgba(79, 70, 229, 0.25);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .results-container {
+            margin-top: 24px; 
+            padding: 16px; 
+            background-color: var(--highlight);
+            border-radius: 12px;
+            border: 1px solid var(--primary-light);
+            display: none; 
+        }
+
+        .results-title {
+            font-size: 1.3rem; 
+            color: var(--primary-dark);
+            margin-bottom: 20px; 
+            text-align: center;
+            padding-bottom: 10px; 
+            border-bottom: 1px dashed var(--primary-light);
+        }
+
+        .result-group {
+            margin-bottom: 16px; 
+            padding-bottom: 6px; 
+        }
+        .result-group:last-of-type {
+            margin-bottom: 0; 
+        }
+
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; 
+            padding: 8px 0; 
+            font-size: 0.9rem; 
+        }
+
+        .result-row:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-label {
+            color: var(--text);
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .subtotal-row {
+            font-weight: 600;
+            background-color: rgba(99, 102, 241, 0.05);
+            padding: 8px 6px; 
+            border-radius: 4px;
+            margin-top: 6px; 
+        }
+        .subtotal-row .result-label, .subtotal-row .result-value {
+             color: var(--primary-dark); 
+        }
+
+
+        .important-row {
+            font-size: 1rem; 
+            font-weight: 700;
+        }
+        .important-row .result-label {
+            color: var(--primary-dark); 
+        }
+        .important-row .result-value {
+            font-size: 1.1rem; 
+        }
+
+
+        .important-value {
+            color: var(--primary);
+        }
+
+        .final-row {
+            margin-top: 16px; 
+            padding: 16px 12px; 
+            background-color: var(--primary-bg); 
+            border: 2px solid var(--primary); 
+            border-radius: 10px; 
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.15); 
+        }
+        .final-row .result-label {
+            color: var(--primary-dark);
+            font-size: 1.1rem; 
+        }
+
+        .final-row .result-value {
+            color: var(--primary-dark);
+            font-size: 1.5rem; 
+            font-weight: bold; 
+        }
+        
+        @media (max-width: 480px) {
+            .final-row {
+                padding: 12px 10px;
+            }
+            .final-row .result-label {
+                font-size: 1rem; 
+            }
+            .final-row .result-value {
+                font-size: 1.3rem;
+            }
+        }
+
+
+        .note {
+            margin-top: 20px; 
+            font-size: 0.8rem; 
+            color: var(--text-light);
+            text-align: center;
+            padding: 10px; 
+            background-color: var(--bg-main);
+            border-radius: 8px;
+            line-height: 1.7; 
+        }
+
+        .error-message {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 10px 14px; 
+            border-radius: 8px;
+            margin-bottom: 12px; 
+            font-size: 0.9rem; 
+            display: none; 
+        }
+
+
+        .input-with-yen {
+            position: relative;
+        }
+
+        .input-with-yen input {
+            padding-right: 36px; 
+        }
+
+        .yen-symbol {
+            position: absolute;
+            right: 12px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--text-light);
+            pointer-events: none;
+            font-size: 0.9rem; 
+        }
+
+        .section-emoji {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.1rem; 
+        }
+        
+        .required-label::after {
+            content: "*";
+            color: var(--error);
+            margin-left: 4px;
+        }
+
+        .contact-banner {
+            margin-top: 24px; 
+            margin-bottom: 12px; 
+            text-align: center; 
+        }
+        .contact-banner img {
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            transition: transform 0.2s ease-in-out;
+        }
+        .contact-banner img:hover {
+            transform: scale(1.02); 
+        }
+        .site-footer {
+            text-align: center;
+            padding: 16px 0; 
+            margin-top: auto; 
+            font-size: 0.8rem; 
+            color: var(--text-light);
+            border-top: 1px solid var(--border); 
         }
     </style>
 </head>
 <body>
 
-<header class="hero-header">
+  <header class="hero-header">
     <img src="firstview.png" alt="ラクちん所得税計算シミュレーション">
-</header>
+  </header>
+
   <div class="disclaimer">
     <strong>【免責事項】</strong>
     本シミュレーションは、一般的な税制に基づき算出された概算結果を提供するものであり、特定の個別事例や最新の法改正等を反映したものではありません。<br>
