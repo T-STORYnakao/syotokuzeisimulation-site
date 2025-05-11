@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラクちん所得税計算シミュレーション</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-bg: #eef2ff;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --bg-main: #f9fafb;
+            --bg-card: #ffffff;
+            --input-bg: #f3f4f6;
+            --input-focus-bg: #f8fafc;
+            --highlight: #f0f9ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex; /* For footer positioning */
+            flex-direction: column; /* For footer positioning */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto; 
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+            flex-grow: 1; /* Allow container to grow and push footer down */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.25rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 4px; 
+        }
+        .disclaimer {
+            font-size: 0.8rem;
+            color: var(--warning); 
+            margin-top: 12px;
+            padding: 8px;
+            background-color: #fffbeb; 
+            border: 1px solid var(--warning);
+            border-radius: 6px;
+            line-height: 1.8; 
+        }
+
+
+        .section {
+            background-color: var(--bg-card); 
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-title h2 {
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+            flex-grow: 1;
+        }
+
+        .section-title .number-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-right: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label.input-label, 
+        .form-group > label { 
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.9375rem;
+        }
+
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            border-color: var(--primary-light);
+            background-color: var(--input-focus-bg);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+
+        input[type="number"]::placeholder,
+        input[type="text"]::placeholder {
+            color: #aab3c0;
+        }
+
+        input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            opacity: 0;
+            position: absolute;
+            left: -9999px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap; 
+        }
+
+        @media (max-width: 480px) {
+            .radio-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative; 
+        }
+        .radio-option::before { 
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--text-light);
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label + span::before, 
+        .radio-option.radio-option-selected::before { 
+            border-color: var(--primary);
+            background-color: var(--primary); 
+        }
+        
+        .radio-option input[type="radio"]:checked + .radio-label + span::after,
+        .radio-option.radio-option-selected::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 18px; 
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white; 
+            display: block;
+        }
+
+
+        .radio-option:hover {
+            border-color: var(--primary-light);
+            background-color: var(--primary-bg);
+        }
+         .radio-option:hover::before {
+            border-color: var(--primary-light);
+        }
+
+        .radio-option.radio-option-selected {
+            border-color: var(--primary);
+            background-color: var(--primary-bg);
+        }
+         .radio-option.radio-option-selected::before {
+            border-color: var(--primary);
+        }
+
+
+        .radio-label {
+            font-size: 0.9375rem;
+            user-select: none; 
+        }
+
+        .help-text {
+            font-size: 0.8125rem;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .calculate-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1.0625rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 10px rgba(79, 70, 229, 0.25);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .results-container {
+            margin-top: 32px;
+            padding: 24px;
+            background-color: var(--highlight);
+            border-radius: 12px;
+            border: 1px solid var(--primary-light);
+            display: none; 
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 24px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--primary-light);
+        }
+
+        .result-group {
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+        }
+        .result-group:last-of-type {
+            margin-bottom: 0; 
+        }
+
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0; 
+            font-size: 0.9375rem;
+        }
+
+        .result-row:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-label {
+            color: var(--text);
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .subtotal-row {
+            font-weight: 600;
+            background-color: rgba(99, 102, 241, 0.05);
+            padding: 10px 8px;
+            border-radius: 4px;
+            margin-top: 8px; 
+        }
+        .subtotal-row .result-label, .subtotal-row .result-value {
+             color: var(--primary-dark); 
+        }
+
+
+        .important-row {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .important-value {
+            color: var(--primary);
+        }
+
+        .final-row {
+            margin-top: 16px;
+            padding: 16px 12px; 
+            background-color: var(--primary-bg);
+            border-radius: 8px;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .final-row .result-label {
+            color: var(--primary-dark);
+        }
+
+        .final-value {
+            color: var(--primary-dark);
+        }
+
+        .note {
+            margin-top: 24px;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-align: center;
+            padding: 12px;
+            background-color: var(--bg-main);
+            border-radius: 8px;
+            line-height: 1.8; 
+        }
+
+        .error-message {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.9375rem;
+            display: none; 
+        }
+
+
+        .input-with-yen {
+            position: relative;
+        }
+
+        .input-with-yen input {
+            padding-right: 40px; 
+        }
+
+        .yen-symbol {
+            position: absolute;
+            right: 14px;
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: var(--text-light);
+            pointer-events: none;
+            font-size: 0.9375rem;
+        }
+
+        .section-emoji {
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 1.25rem;
+        }
+        
+        .required-label::after {
+            content: "*";
+            color: var(--error);
+            margin-left: 4px;
+        }
+
+        .contact-banner {
+            margin-top: 32px; 
+            margin-bottom: 16px; 
+            text-align: center; 
+        }
+        .contact-banner img {
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            transition: transform 0.2s ease-in-out;
+        }
+        .contact-banner img:hover {
+            transform: scale(1.02); 
+        }
+        .site-footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto; /* Push footer to the bottom */
+            font-size: 0.875rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border); /* Optional: add a top border to the footer */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ラクちん所得税計算シミュレーション</h1>
+            <p>2025年以降の税制に対応（復興特別所得税2.1%を含む）</p>
+            <p class="disclaimer">※このシミュレーションは概算であり、実際の税額と異なる場合があります。<br>いかなる場合においても、本シミュレーションの利用により生じた損害について、<br>一切の責任を負いかねますのでご了承ください。</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="section">
+            <div class="section-title">
+                <span class="number-badge">1</span>
+                <h2><span class="section-emoji">💼</span>売上と必要経費</h2>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="income" class="required-label input-label">売上金額</label>
+                    <div class="input-with-yen">
+                        <input type="number" id="income" placeholder="例: 5000000" required>
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">売上金額や給与収入などの総額</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="expenses" class="input-label">必要経費</label>
+                    <div class="input-with-yen">
+                        <input type="number" id="expenses" placeholder="例: 1000000">
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">事業の場合は必要経費、給与の場合は給与所得控除額</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="input-label">青色申告特別控除</label>
+                <div class="radio-group">
+                    <label class="radio-option" id="blueYesLabel">
+                        <input type="radio" name="blueReturnDeduction" value="650000" id="blueYes"> 
+                        <span class="radio-label">あり（65万円）</span>
+                        <span></span> </label>
+                    <label class="radio-option radio-option-selected" id="blueNoLabel">
+                        <input type="radio" name="blueReturnDeduction" value="0" id="blueNo" checked> 
+                        <span class="radio-label">なし</span>
+                        <span></span> </label>
+                </div>
+                <p class="help-text">青色申告を行っている場合のみ適用されます</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <span class="number-badge">2</span>
+                <h2><span class="section-emoji">👨‍👩‍👧‍👦</span>家族構成</h2>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="dependents" class="input-label">扶養親族数（16歳以上）</label>
+                    <select id="dependents">
+                        <option value="0">0人</option>
+                        <option value="1">1人</option>
+                        <option value="2">2人</option>
+                        <option value="3">3人</option>
+                        <option value="4">4人</option>
+                        <option value="5">5人以上</option>
+                    </select>
+                    <p class="help-text">一般扶養親族：38万円/人</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="under16" class="input-label">扶養親族数（16歳未満）</label>
+                    <select id="under16">
+                        <option value="0">0人</option>
+                        <option value="1">1人</option>
+                        <option value="2">2人</option>
+                        <option value="3">3人</option>
+                        <option value="4">4人</option>
+                        <option value="5">5人以上</option>
+                    </select>
+                    <p class="help-text">16歳未満の扶養親族は所得税の扶養控除の対象外です（住民税には影響します）</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="input-label">配偶者の有無</label>
+                <div class="radio-group">
+                    <label class="radio-option" id="spouseYesLabel">
+                        <input type="radio" name="spouse" value="yes" id="spouseYes"> 
+                        <span class="radio-label">あり</span>
+                        <span></span>
+                    </label>
+                    <label class="radio-option radio-option-selected" id="spouseNoLabel">
+                        <input type="radio" name="spouse" value="no" id="spouseNo" checked> 
+                        <span class="radio-label">なし</span>
+                        <span></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group" id="spouseDeductionContainer" style="display: none;">
+                <label for="spouseDeduction" class="input-label">配偶者控除／配偶者特別控除の額</label>
+                <div class="input-with-yen">
+                    <input type="number" id="spouseDeduction" placeholder="例: 380000">
+                    <span class="yen-symbol">円</span>
+                </div>
+                <p class="help-text">納税者本人と配偶者の所得に応じて変動（最大38万円）。<br>ここでは配偶者の収入103万円以下と仮定し、38万円を自動入力しています。</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <span class="number-badge">3</span>
+                <h2><span class="section-emoji">📝</span>各種所得控除</h2>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="socialInsurance" class="input-label">社会保険料控除</label>
+                    <div class="input-with-yen">
+                        <input type="number" id="socialInsurance" placeholder="例: 700000">
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">健康保険、年金、雇用保険等の支払額合計</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lifeInsurance" class="input-label">生命保険料控除</label>
+                    <div class="input-with-yen">
+                        <input type="number" id="lifeInsurance" placeholder="例: 50000">
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">生命保険料控除の適用額（最大12万円）</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="medicalExpenses" class="input-label">医療費控除</label>
+                    <div class="input-with-yen">
+                        <input type="number" id="medicalExpenses" placeholder="例: 150000">
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">同世帯でかかった医療費の合計金額（ここから10万円を引いた額が控除対象）</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="smallBusiness" class="input-label">小規模企業共済等掛金控除</label>
+                    <div class="input-with-yen">
+                        <input type="number" id="smallBusiness" placeholder="例: 0">
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">小規模企業共済やiDeCo等の掛金</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="otherDeduction" class="input-label">その他の所得控除</label>
+                <div class="input-with-yen">
+                    <input type="number" id="otherDeduction" placeholder="例: 0">
+                        <span class="yen-symbol">円</span>
+                    </div>
+                    <p class="help-text">雑損控除、寄付金控除など上記以外の所得控除合計</p>
+                </div>
+            </div>
+            
+            <button id="calculateBtn" class="calculate-btn">計算する</button>
+            
+            <div id="resultsContainer" class="results-container">
+                <h3 class="results-title">所得税シミュレーション結果</h3>
+                
+                <div class="result-group">
+                    <div class="result-row">
+                        <span class="result-label">① 売上金額</span>
+                        <span class="result-value" id="resultIncome">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">② 必要経費</span>
+                        <span class="result-value" id="resultExpenses">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">青色申告特別控除</span>
+                        <span class="result-value" id="resultBlueReturn">0円</span>
+                    </div>
+                    <div class="result-row subtotal-row">
+                        <span class="result-label">所得金額 (① - ② - 青色控除)</span>
+                        <span class="result-value" id="resultTotalIncome">0円</span>
+                    </div>
+                </div>
+                
+                <div class="result-group">
+                    <div class="result-row">
+                        <span class="result-label">基礎控除</span>
+                        <span class="result-value" id="resultBasicDeduction">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">配偶者(特別)控除</span>
+                        <span class="result-value" id="resultSpouseDeductionCalc">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">扶養控除</span>
+                        <span class="result-value" id="resultDependentDeduction">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">社会保険料控除</span>
+                        <span class="result-value" id="resultSocialInsuranceCalc">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">生命保険料控除</span>
+                        <span class="result-value" id="resultLifeInsuranceCalc">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">医療費控除</span>
+                        <span class="result-value" id="resultMedicalExpensesCalc">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">小規模企業共済等掛金控除</span>
+                        <span class="result-value" id="resultSmallBusinessCalc">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">その他の所得控除</span>
+                        <span class="result-value" id="resultOtherDeductionCalc">0円</span>
+                    </div>
+                    <div class="result-row subtotal-row">
+                        <span class="result-label">③ 所得控除合計</span>
+                        <span class="result-value" id="resultTotalDeduction">0円</span>
+                    </div>
+                </div>
+                
+                <div class="result-group">
+                    <div class="result-row important-row">
+                        <span class="result-label">④ 課税所得金額</span>
+                        <span class="result-value important-value" id="resultTaxableIncome">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">適用税率</span>
+                        <span class="result-value" id="resultTaxRate">0%</span>
+                    </div>
+                    <div class="result-row important-row">
+                        <span class="result-label">⑤ 所得税額</span>
+                        <span class="result-value important-value" id="resultIncomeTax">0円</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-label">⑥ 復興特別所得税 (所得税額 × 2.1%)</span>
+                        <span class="result-value" id="resultRecoveryTax">0円</span>
+                    </div>
+                    <div class="result-row final-row">
+                        <span class="result-label">⑦ 最終的な納税額</span>
+                        <span class="result-value final-value" id="resultFinalTax">0円</span>
+                    </div>
+                </div>
+                
+                <p class="note">※ このシミュレーションは一般的なケースを想定した概算であり、実際の税額とは異なる場合があります。<br>詳細は税務署や税理士にご相談ください。</p>
+                
+                <div class="contact-banner">
+                    <a href="https://lin.ee/K8sNswk" target="_blank" rel="noopener noreferrer">
+                        <img src="シミュレーションサイト　問い合わせバナー.png" alt="無料相談・問い合わせバナー">
+                    </a>
+                </div>
+            </div>
+        </div>
+    <footer class="site-footer">
+        <p>© 株式会社T-STORY</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ラジオボタン選択エフェクト
+            const radioOptions = document.querySelectorAll('.radio-option');
+            
+            radioOptions.forEach(option => {
+                const radio = option.querySelector('input[type="radio"]');
+                
+                // 初期状態で選択されているラジオボタンにスタイルを適用
+                if (radio.checked) {
+                    option.classList.add('radio-option-selected');
+                }
+
+                option.addEventListener('click', function(event) {
+                    // ラジオボタン自体へのクリックでない場合（ラベルクリックなど）にラジオをチェック
+                    if (event.target !== radio) {
+                         radio.checked = true;
+                    }
+
+                    const name = radio.getAttribute('name');
+                    const group = document.querySelectorAll(`input[name="${name}"]`);
+                    
+                    group.forEach(r => {
+                        const parentLabel = r.closest('.radio-option');
+                        if (parentLabel) {
+                            parentLabel.classList.remove('radio-option-selected');
+                        }
+                    });
+                    
+                    option.classList.add('radio-option-selected');
+                    
+                    // 配偶者控除の入力フィールドの表示/非表示とデフォルト値設定
+                    if (name === 'spouse') {
+                        toggleSpouseDeduction();
+                    }
+                });
+            });
+            
+            // 配偶者控除の表示/非表示を切り替える関数
+            function toggleSpouseDeduction() {
+                const spouseYes = document.getElementById('spouseYes');
+                const spouseDeductionContainer = document.getElementById('spouseDeductionContainer');
+                const spouseDeductionInputEl = document.getElementById('spouseDeduction');
+                
+                if (spouseYes.checked) {
+                    spouseDeductionContainer.style.display = 'block';
+                    spouseDeductionInputEl.value = '380000'; // 「あり」選択時に38万円を自動入力
+                } else {
+                    spouseDeductionContainer.style.display = 'none';
+                    spouseDeductionInputEl.value = ''; // 非表示時に値をクリア
+                }
+            }
+            
+            // 初期表示時の配偶者控除欄の状態を設定
+            toggleSpouseDeduction();
+            
+            // 数値を円表記にフォーマットする関数
+            function formatCurrency(value) {
+                if (isNaN(value)) return "0円";
+                return Math.round(value).toLocaleString('ja-JP') + '円';
+            }
+             function formatPercentage(value) {
+                if (isNaN(value)) return "0%";
+                return value.toFixed(1) + '%';
+            }
+
+            // 計算ボタンのイベントリスナー
+            document.getElementById('calculateBtn').addEventListener('click', calculateTax);
+            
+            // 所得税計算関数
+            function calculateTax() {
+                // エラーメッセージをリセット
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.style.display = 'none';
+                errorMessage.textContent = '';
+                
+                // 入力値の取得とパース
+                const income = parseFloat(document.getElementById('income').value) || 0; 
+                const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+                const blueReturnDeductionValue = parseFloat(document.querySelector('input[name="blueReturnDeduction"]:checked').value) || 0;
+                
+                const dependents = parseInt(document.getElementById('dependents').value) || 0;
+                
+                const hasSpouse = document.querySelector('input[name="spouse"]:checked').value === 'yes';
+                let spouseDeductionInput = 0;
+                if (hasSpouse) {
+                    spouseDeductionInput = parseFloat(document.getElementById('spouseDeduction').value) || 0;
+                }
+                
+                const socialInsurance = parseFloat(document.getElementById('socialInsurance').value) || 0;
+                const lifeInsuranceInput = parseFloat(document.getElementById('lifeInsurance').value) || 0;
+                
+                // 医療費控除の計算 (入力値 - 10万円、ただし0未満にならない)
+                const medicalExpensesTotal = parseFloat(document.getElementById('medicalExpenses').value) || 0;
+                const medicalExpensesDeductible = Math.max(0, medicalExpensesTotal - 100000);
+
+                const smallBusinessMutualAid = parseFloat(document.getElementById('smallBusiness').value) || 0;
+                const otherDeductionsInput = parseFloat(document.getElementById('otherDeduction').value) || 0;
+
+                // 必須項目（売上金額）のチェック
+                if (income <= 0 && document.getElementById('income').value.trim() !== "" && parseFloat(document.getElementById('income').value) <=0 ) {
+                } else if (document.getElementById('income').value.trim() === "" || isNaN(parseFloat(document.getElementById('income').value))) {
+                     errorMessage.textContent = '売上金額は必須項目です。数値を入力してください。'; 
+                     errorMessage.style.display = 'block';
+                     document.getElementById('resultsContainer').style.display = 'none';
+                     return;
+                }
+
+                // その他の入力値のバリデーション（負の値のチェック）
+                // medicalExpensesTotalは負の値を許容しない (医療費がマイナスはありえないため)
+                if (expenses < 0 || spouseDeductionInput < 0 || socialInsurance < 0 || 
+                    lifeInsuranceInput < 0 || medicalExpensesTotal < 0 || smallBusinessMutualAid < 0 || 
+                    otherDeductionsInput < 0) {
+                    errorMessage.textContent = '控除額等に負の数が入力されています。0以上の数値を入力してください。';
+                    errorMessage.style.display = 'block';
+                    document.getElementById('resultsContainer').style.display = 'none';
+                    return;
+                }
+                
+                // ステップ1: 所得金額の計算
+                const incomeBeforeBlueReturn = Math.max(0, income - expenses);
+                const calculatedIncome = Math.max(0, incomeBeforeBlueReturn - blueReturnDeductionValue);
+
+                // ステップ2: 各種所得控除の計算
+                let basicDeduction = 0;
+                if (incomeBeforeBlueReturn <= 24000000) {
+                    basicDeduction = 480000;
+                } else if (incomeBeforeBlueReturn <= 24500000) {
+                    basicDeduction = 320000;
+                } else if (incomeBeforeBlueReturn <= 25000000) {
+                    basicDeduction = 160000;
+                } else {
+                    basicDeduction = 0;
+                }
+
+                const dependentDeductionAmount = dependents * 380000;
+                const spouseDeductionAmount = spouseDeductionInput; 
+                const lifeInsuranceDeductionAmount = Math.min(lifeInsuranceInput, 120000);
+
+                const totalIncomeDeductions = basicDeduction + 
+                                              spouseDeductionAmount + 
+                                              dependentDeductionAmount + 
+                                              socialInsurance + 
+                                              lifeInsuranceDeductionAmount + 
+                                              medicalExpensesDeductible + // 計算済みの控除額を使用
+                                              smallBusinessMutualAid + 
+                                              otherDeductionsInput;
+
+                // ステップ3: 課税所得金額の計算
+                let taxableIncome = calculatedIncome - totalIncomeDeductions;
+                taxableIncome = Math.max(0, taxableIncome); 
+                taxableIncome = Math.floor(taxableIncome / 1000) * 1000; 
+
+                // ステップ4: 所得税額の計算（累進課税）と適用税率
+                let incomeTaxAmount = 0;
+                let taxRateDisplay = 0;
+
+                if (taxableIncome <= 1950000) {
+                    incomeTaxAmount = taxableIncome * 0.05;
+                    taxRateDisplay = 5;
+                } else if (taxableIncome <= 3300000) {
+                    incomeTaxAmount = taxableIncome * 0.10 - 97500;
+                    taxRateDisplay = 10;
+                } else if (taxableIncome <= 6950000) {
+                    incomeTaxAmount = taxableIncome * 0.20 - 427500;
+                    taxRateDisplay = 20;
+                } else if (taxableIncome <= 9000000) {
+                    incomeTaxAmount = taxableIncome * 0.23 - 636000;
+                    taxRateDisplay = 23;
+                } else if (taxableIncome <= 18000000) {
+                    incomeTaxAmount = taxableIncome * 0.33 - 1536000;
+                    taxRateDisplay = 33;
+                } else if (taxableIncome <= 40000000) {
+                    incomeTaxAmount = taxableIncome * 0.40 - 2796000;
+                    taxRateDisplay = 40;
+                } else {
+                    incomeTaxAmount = taxableIncome * 0.45 - 4796000;
+                    taxRateDisplay = 45;
+                }
+                incomeTaxAmount = Math.max(0, Math.floor(incomeTaxAmount)); 
+
+                // ステップ5: 復興特別所得税の計算
+                const reconstructionSpecialIncomeTax = Math.floor(incomeTaxAmount * 0.021); 
+
+                // ステップ6: 最終的な納税額の計算
+                const finalTaxAmountRaw = incomeTaxAmount + reconstructionSpecialIncomeTax;
+                const finalTaxAmount = Math.floor(finalTaxAmountRaw / 100) * 100; 
+
+                // 結果の表示
+                document.getElementById('resultIncome').textContent = formatCurrency(income); 
+                document.getElementById('resultExpenses').textContent = formatCurrency(expenses);
+                document.getElementById('resultBlueReturn').textContent = formatCurrency(blueReturnDeductionValue);
+                document.getElementById('resultTotalIncome').textContent = formatCurrency(calculatedIncome);
+                
+                document.getElementById('resultBasicDeduction').textContent = formatCurrency(basicDeduction);
+                document.getElementById('resultSpouseDeductionCalc').textContent = formatCurrency(spouseDeductionAmount);
+                document.getElementById('resultDependentDeduction').textContent = formatCurrency(dependentDeductionAmount);
+                document.getElementById('resultSocialInsuranceCalc').textContent = formatCurrency(socialInsurance);
+                document.getElementById('resultLifeInsuranceCalc').textContent = formatCurrency(lifeInsuranceDeductionAmount);
+                document.getElementById('resultMedicalExpensesCalc').textContent = formatCurrency(medicalExpensesDeductible); // 計算後の控除額を表示
+                document.getElementById('resultSmallBusinessCalc').textContent = formatCurrency(smallBusinessMutualAid);
+                document.getElementById('resultOtherDeductionCalc').textContent = formatCurrency(otherDeductionsInput);
+                document.getElementById('resultTotalDeduction').textContent = formatCurrency(totalIncomeDeductions);
+                
+                document.getElementById('resultTaxableIncome').textContent = formatCurrency(taxableIncome);
+                document.getElementById('resultTaxRate').textContent = taxRateDisplay.toFixed(0) + '%'; 
+                document.getElementById('resultIncomeTax').textContent = formatCurrency(incomeTaxAmount);
+                document.getElementById('resultRecoveryTax').textContent = formatCurrency(reconstructionSpecialIncomeTax);
+                document.getElementById('resultFinalTax').textContent = formatCurrency(finalTaxAmount);
+
+                document.getElementById('resultsContainer').style.display = 'block'; 
+            }
+        });
+    </script>
+</body>
+</html>
