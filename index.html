@@ -65,8 +65,7 @@
             max-width: 900px;       /* container と合わせる */
             margin: 0 auto;         /* 中央揃え */
             display: block;
-            border-bottom-left-radius: 24px; /* 画像の下部角丸 */
-            border-bottom-right-radius: 24px; /* 画像の下部角丸 */
+            border-radius: 24px; /* 四隅すべてを同じ丸みに */
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 画像に影 */
         }
         
@@ -109,8 +108,7 @@
                 /* padding-left/right は基本スタイルで設定済み */
             }
             .hero-header img {
-                border-bottom-left-radius: 15px;
-                border-bottom-right-radius: 15px;
+                border-radius: 15px; /* スマホ表示時の四隅の丸み */
             }
             .disclaimer {
                 font-size: 0.85rem;
@@ -297,18 +295,10 @@
             background-color: var(--primary); 
         }
         
+        /* 白い点を非表示にする */
         .radio-option input[type="radio"]:checked + .radio-label + span::after,
         .radio-option.radio-option-selected::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 17px; 
-            transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: white; 
-            display: block;
+            display: none; /* この行を追加して白い点を消します */
         }
 
 
